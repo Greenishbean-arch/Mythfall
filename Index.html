@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MYTHFALL // ARCHIVE_CORRUPTED</title>
+<style>
+body {
+    background: black;
+    color: #00ffcc;
+    font-family: monospace;
+    padding: 15px;
+}
+button {
+    width: 100%;
+    background: #0a0a0a;
+    color: #00ffcc;
+    border: 1px solid #00ffcc;
+    padding: 10px;
+    margin: 4px 0;
+}
+button:hover {
+    background: #111;
+}
+#log {
+    border: 1px solid #00ffcc;
+    padding: 10px;
+    height: 320px;
+    overflow-y: auto;
+    white-space: pre-line;
+}
+</style>
+</head>
+
+<body>
+
+<pre>
+ ███╗   ███╗██╗   ██╗████████╗██╗  ██╗███████╗ █████╗ ██╗     ██╗     
+ ████╗ ████║╚██╗ ██╔╝╚══██╔══╝██║  ██║██╔════╝██╔══██╗██║     ██║     
+ ██╔████╔██║ ╚████╔╝    ██║   ███████║█████╗  ███████║██║     ██║     
+ ██║╚██╔╝██║  ╚██╔╝     ██║   ██╔══██║██╔══╝  ██╔══██║██║     ██║     
+ ██║ ╚═╝ ██║   ██║      ██║   ██║  ██║██║     ██║  ██║███████╗███████╗
+</pre>
+
+<div id="menu"></div>
+<div id="log"></div>
+
+<script>
+let player = null;
+let enemy = null;
+let stage = 0;
+
+const myths = {
+ "John Doe": { hp:120, atk:10, attacks:["Corrupt Strike","System Lock"] },
+ "Noli": { hp:90, atk:14, attacks:["Blink Cut","Glitch Pierce"] },
+ "Goz the Clown": { hp:110, atk:16, attacks:["Laughing Slash","Unstable Charge"] },
+ "1x1x1x1x1": { hp:80, atk:22, attacks:["Red Flood","Execute Script"] },
+ "Spirit": { hp:100, atk:12, attacks:["Possess","Drain Soul"], lifesteal:true }
+};
+
+const encounters = [
+ {name:"Noob", hp:30, atk:6},
+ {name:"Guest", hp:40, atk:8},
+ {name:"Shedletsky", hp:90, atk:12},
+ {name:"Clockwork", hp:120, atk:14},
+ {name:"MrDoomBringer", hp:160, atk:16},
+ {name:"Builderman", hp:240, atk:20}
+];
+
+function log(t){
+ let l=document.getElementById("log");
+ l.textContent+=t+"\n";
+ l.scrollTop=l.scrollHeight;
+}
+
+function saveGame(){
+ localStorage.setItem("mythfall_save",JSON.stringify({player,stage}));
+ log("[SAVE COMPLETE]");
+}
+
+function loadGame(){
+ let data=localStorage.getItem("mythfall_save");
+ if(!data){log("NO SAVE FOUND");return;}
+ let d=JSON.parse(data);
+ player=d.player;
+ stage=d.stage;
+ log("[SAVE LOADED]");
+ nextEncounter();
+}
+
+function startMenu(){
+ let m=document.getElementById("menu");
+ m.innerHTML="<h3>SELECT A MYTH</h3>";
+ for(let k in myths){
+  let b=document.createElement("button");
+  b.textContent=k;
+  b.onclick=()=>startGame(k);
+  m.appendChild(b);
+ }
+ m.innerHTML+=`<button onclick="loadGame()">LOAD SAVE</button>`;
+}
+
+function startGame(name){
+ player={
+  name,
+  maxHp:myths[name].hp,
+  hp:myths[name].hp,
+  atk:myths[name].atk,
+  attacks:myths[name].attacks,
+  lifesteal:myths[name].lifesteal||false,
+  inventory:["Patch Script","Old Sword"]
+ };
+ document.getElementById("menu").innerHTML="";
+ log("ARCHIVE ACCESS GRANTED.");
+ log("MYTH IDENTIFIED: "+name);
+ nextEncounter();
+}
+
+function nextEncounter(){
+ if(stage>=encounters.length){
+  ending();
+  return;
+ }
+ enemy={...encounters[stage]};
+ log("\nENTITY DETECTED: "+enemy.name);
+ actionMenu();
+}
+
+function actionMenu(){
+ let m=document.getElementById("menu");
+ m.innerHTML="<h3>ACTIONS</h3>";
+ player.attacks.forEach(a=>{
+  let b=document.createElement("button");
+  b.textContent=a;
+  b.onclick=()=>attack(a);
+  m.appendChild(b);
+ });
+ let i=document.createElement("button");
+ i.textContent="Inventory";
+ i.onclick=inventoryMenu;
+ m.appendChild(i);
+
+ let s=document.createElement("button");
+ s.textContent="Save";
+ s.onclick=saveGame;
+ m.appendChild(s);
+}
+
+function attack(name){
+ let dmg=Math.floor(Math.random()*player.atk)+5;
+ enemy.hp-=dmg;
+ log("You used "+name+" ("+dmg+")");
+
+ if(player.lifesteal){
+  player.hp+=5;
+  log("SOUL DRAIN +5 HP");
+ }
+
+ if(enemy.hp<=0){
+  log(enemy.name+" HAS BEEN DELETED.");
+  stage++;
+  nextEncounter();
+  return;
+ }
+
+ let edmg=Math.floor(Math.random()*enemy.atk)+4;
+ player.hp-=edmg;
+ log(enemy.name+" STRIKES BACK ("+edmg+")");
+
+ if(player.hp<=0){
+  log("\nYOU HAVE BEEN ERASED FROM THE ARCHIVE.");
+  document.getElementById("menu").innerHTML=
+   `<button onclick="location.reload()">RESTART</button>`;
+ }
+}
+
+function inventoryMenu(){
+ let m=document.getElementById("menu");
+ m.innerHTML="<h3>INVENTORY</h3>";
+ player.inventory.forEach((item,i)=>{
+  let b=document.createElement("button");
+  b.textContent=item;
+  b.onclick=()=>{
+   if(item==="Patch Script"){
+    player.hp=Math.min(player.maxHp,player.hp+25);
+    log("PATCH APPLIED (+25 HP)");
+   }
+   if(item==="Old Sword"){
+    player.atk+=3;
+    log("WEAPON UPGRADED (+3 ATK)");
+   }
+   player.inventory.splice(i,1);
+   actionMenu();
+  };
+  m.appendChild(b);
+ });
+ let back=document.createElement("button");
+ back.textContent="Back";
+ back.onclick=actionMenu;
+ m.appendChild(back);
+}
+
+function ending(){
+ document.getElementById("menu").innerHTML="";
+ log("\nBUILDERMAN HAS FALLEN.");
+ log("THE PLATFORM SHUTS DOWN.");
+ log("THE ARCHIVE CLOSES.");
+
+ if(player.name==="1x1x1x1x1"){
+  log("\nENDING: RED ADMIN");
+  log("YOU CLAIM OWNERSHIP OF ROBLOX ITSELF.");
+ } else {
+  log("\nENDING: LOST MYTH");
+  log("YOU FADE BACK INTO DELETED HISTORY.");
+ }
+}
+
+startMenu();
+</script>
+
+</body>
+</html>
