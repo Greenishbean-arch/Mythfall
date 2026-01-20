@@ -17,7 +17,7 @@
     #inventory { background:#222; padding:5px; border:1px solid #444; border-radius:4px; margin-bottom:10px; }
     #inventoryList { list-style:none; padding:0; }
     #inventoryList li { margin:2px 0; }
-    #log { background:#000; color:#0f0; padding:5px; height:200px; overflow-y:auto; border:1px solid #444; white-space:pre-wrap; }
+    #log { background:#000; color:#0f0; padding:5px; height:300px; overflow-y:auto; border:1px solid #444; white-space:pre-wrap; }
     .playerText { color:#0f0; }
     .enemyText { color:#f66; }
     .bossText { color:#f0f; }
@@ -29,23 +29,15 @@
 
 <div id="intro">
   <pre id="ascii-art">
-  
-  ._____.
- /   _  _\
- |  |   | |
- |   ___  |
-  \______/
-[#######]
-|#######|
-|#######|
-|#######|
-—————----
-|###| |###|
-###.   ###
-###.   ###
-###.   ###
-###.   ###
-—————-----
+        ___
+       (   )    *..
+       |   |   ****
+       |   |
+       |   |   
+       -----_______
+      /############\
+     /##############\
+    /################\
   </pre>
   <div>
     <p>A void beyond reality. A chilling whisper fills your mind:</p>
@@ -72,6 +64,7 @@
   </div>
   <div id="actions">
     <button id="attackBtn">Attack</button>
+    <button id="exploreBtn" style="display:none;">Explore</button>
     <button id="saveBtn">Save Game</button>
   </div>
   <div id="inventory">
@@ -89,34 +82,203 @@ const characters = {
   OneXfive:{name:"1x1x1x1x1", maxHp:110, attack:18},
   Spirit:{name:"Spirit", maxHp:90, attack:10}
 };
+
 const enemies = {
   Noob:{name:"Noob", maxHp:30, attack:5,type:"enemy"},
   Guest:{name:"Guest", maxHp:50, attack:8,type:"enemy"},
-  Shedletsky:{name:"Shedletsky", maxHp:150, attack:20,type:"boss"},
-  Clockwork:{name:"Clockwork", maxHp:180, attack:22,type:"boss"},
-  MrDoomBringer:{name:"MrDoomBringer", maxHp:200, attack:25,type:"boss"},
-  Builderman:{name:"Builderman", maxHp:250, attack:30,type:"final"}
+  Shedletsky:{name:"Shedletsky", maxHp:300, attack:20,type:"boss"},
+  Clockwork:{name:"Clockwork", maxHp:350, attack:22,type:"boss"},
+  MrDoomBringer:{name:"MrDoomBringer", maxHp:400, attack:25,type:"boss"},
+  Builderman:{name:"Builderman", maxHp:600, attack:30,type:"final"}
 };
+
 const inventoryItems = [
   {id:"medkit",name:"Medkit",count:2},
   {id:"megaMedkit",name:"Mega Medkit",count:1},
   {id:"powerOrb",name:"Power Orb",count:1}
 ];
-let state = {player:null,enemy:null,waveIndex:0,inventory:{}};
+
+let state = {player:null,enemy:null,waveIndex:0,inventory:{},nextEncounters:[]};
+
 function $(id){return document.getElementById(id);}
 function addLog(msg,className="systemText"){const l=$('log');const e=document.createElement('div');e.className=className;e.innerHTML=msg;l.appendChild(e);l.scrollTop=l.scrollHeight;}
-function updateStats(){if(!state.player||!state.enemy)return;const p=state.player,e=state.enemy;$('playerStats').innerHTML=`<strong>Player:</strong> ${p.name}<br>HP: ${p.hp}/${p.maxHp} | ATK: ${p.attack}`;let label=(e.type==="boss"||e.type==="final")?`<strong>Admin:</strong> ${e.name}`:`<strong>Enemy:</strong> ${e.name}`;$('enemyStats').innerHTML=`${label}<br>HP: ${e.hp}/${e.maxHp} | ATK: ${e.attack}`;}
-function startNewGame(){localStorage.removeItem('rpgSave');$('intro').style.display='none';$('charSelect').style.display='block';$('loadBtn').style.display='none';addLog("System: Starting a new game...","systemText");}
-function loadGame(){const s=JSON.parse(localStorage.getItem('rpgSave'));if(!s){addLog("No save file found.","systemText");return;} $('intro').style.display='none';$('charSelect').style.display='none';$('game').style.display='block';state.player=s.player;state.inventory=s.inventory;state.waveIndex=s.waveIndex;state.enemy=s.enemy;updateStats();renderInventory();addLog(`Game loaded. You are playing as ${state.player.name}.`,"systemText");}
-function saveGame(){if(!state.player)return;localStorage.setItem('rpgSave',JSON.stringify(state));addLog("Game saved.","systemText");}
-function nextEnemy(){state.waveIndex++;let next;switch(state.waveIndex){case 1:next="Noob";break;case 2:next="Guest";break;case 3:next="Noob";break;case 4:next="Guest";break;case 5:next="Shedletsky";break;case 6:next="Noob";break;case 7:next="Guest";break;case 8:next="Noob";break;case 9:next="Guest";break;case 10:next="Clockwork";break;case 11:next="Noob";break;case 12:next="Guest";break;case 13:next="Noob";break;case 14:next="Guest";break;case 15:next="MrDoomBringer";break;case 16:next="Builderman";break;default:next=null;}if(!next)return;state.enemy={...enemies[next],hp:enemies[next].maxHp};if(state.enemy.type==="enemy")addLog(`A wild ${state.enemy.name} appears!`,"enemyText");else if(state.enemy.type==="boss")addLog(`Boss fight! Admin ${state.enemy.name} challenges you!`,"bossText");else addLog(`Final challenge: Builderman stands before you!`,"bossText");updateStats();}
-function endGame(v){if(v)addLog("Victory! You have vanquished all foes!","systemText");else addLog("You have been defeated. Game over.","systemText");$('attackBtn').disabled=true;localStorage.removeItem('rpgSave');}
-function performAttack(){if(!state.enemy||!state.player)return;const p=state.player,e=state.enemy;let dmg=Math.max(1,Math.floor(p.attack*(0.8+Math.random()*0.4)));e.hp=Math.max(0,e.hp-dmg);let desc="attacks";switch(p.name){case"John Doe":desc="unleashes a surge of malefic light and deals";break;case"Noli":desc="conjures a dark flame and deals";break;case"Goz":desc="launches a twisted carnival curse and deals";break;case"1x1x1x1x1":desc="warps reality with glitchy code and deals";break;case"Spirit":desc="drains the essence and deals";break;}addLog(`${p.name} ${desc} ${dmg} damage to ${e.name}.`,"playerText");if(e.hp<=0){addLog(`${e.name} has been defeated!`,"playerText");if(e.type==="final"){endGame(true);return;}nextEnemy();return;}updateStats();let edmg=Math.max(1,Math.floor(e.attack*(0.8+Math.random()*0.4)));p.hp=Math.max(0,p.hp-edmg);addLog(`${e.name} attacks you for ${edmg} damage.`,"enemyText");if(p.hp<=0){endGame(false);return;}updateStats();}
-function chooseMyth(key){const charData=characters[key];state.player={name:charData.name,hp:charData.maxHp,maxHp:charData.maxHp,attack:charData.attack};state.inventory={};inventoryItems.forEach(item=>state.inventory[item.id]=item.count);$('charSelect').style.display='none';$('game').style.display='block';addLog(`You are now ${state.player.name}. Let the battle begin!`,"systemText");renderInventory();nextEnemy();}
-function renderInventory(){const list=$('inventoryList');list.innerHTML='';Object.keys(state.inventory).forEach(id=>{const c=state.inventory[id];if(c>0){let n="";if(id==="medkit")n="Medkit (Heals 20 HP)";if(id==="megaMedkit")n="Mega Medkit (Fully heals)";if(id==="powerOrb")n="Power Orb (Gain +10 ATK)";const li=document.createElement('li');li.innerHTML=`${n}: x${c} <button onclick="useItem('${id}')">Use</button>`;list.appendChild(li);}});}
-function useItem(id){const p=state.player;if(state.inventory[id]>0){state.inventory[id]--;let msg="";if(id==="medkit"){const h=20;p.hp=Math.min(p.maxHp,p.hp+h);msg=`You used a Medkit and healed ${h} HP.`;}else if(id==="megaMedkit"){p.hp=p.maxHp;msg=`You used a Mega Medkit and fully healed.`;}else if(id==="powerOrb"){p.attack+=10;msg=`You used a Power Orb. Your attack increases by 10.`;}addLog(msg,"itemText");updateStats();renderInventory();}}
-$('startBtn').addEventListener('click',startNewGame);$('loadBtn').addEventListener('click',loadGame);$('attackBtn').addEventListener('click',performAttack);$('saveBtn').addEventListener('click',saveGame);
-window.onload=function(){if(localStorage.getItem('rpgSave'))$('loadBtn').style.display='inline-block';renderInventory();}
+function updateStats(){if(!state.player||!state.enemy)return;const p=state.player,e=state.enemy;$('playerStats').innerHTML=`<strong>Player:</strong> ${p.name}<br>HP: ${p.hp}/${p.maxHp} | ATK: ${p.attack} | LVL: ${p.level} | XP: ${p.xp}/${p.xpToLevel}`;let label=(e.type==="boss"||e.type==="final")?`<strong>Admin:</strong> ${e.name}`:`<strong>Enemy:</strong> ${e.name}`;$('enemyStats').innerHTML=`${label}<br>HP: ${e.hp}/${e.maxHp} | ATK: ${e.attack}`;}
+
+function startNewGame(){
+  localStorage.removeItem('rpgSave');
+  $('intro').style.display='none';
+  $('charSelect').style.display='block';
+  $('loadBtn').style.display='none';
+  addLog("System: Starting a new game...","systemText");
+}
+
+function loadGame(){
+  const s=JSON.parse(localStorage.getItem('rpgSave'));
+  if(!s){addLog("No save file found.","systemText");return;}
+  $('intro').style.display='none';
+  $('charSelect').style.display='none';
+  $('game').style.display='block';
+  state.player=s.player;
+  state.inventory=s.inventory;
+  state.waveIndex=s.waveIndex;
+  state.nextEncounters=s.nextEncounters;
+  state.enemy=s.enemy;
+  updateStats();
+  renderInventory();
+  addLog(`Game loaded. You are playing as ${state.player.name}.`,"systemText");
+}
+
+function saveGame(){
+  if(!state.player)return;
+  localStorage.setItem('rpgSave',JSON.stringify(state));
+  addLog("Game saved.","systemText");
+}
+
+// Generate random waves
+function generateEncounters(){
+  const waves=[];
+  for(let i=0;i<20;i++){
+    let rand=Math.random();
+    let enemyType;
+    if(rand<0.5) enemyType="Noob";
+    else if(rand<0.8) enemyType="Guest";
+    else if(rand<0.9) enemyType=Math.random()<0.5?"Shedletsky":"Clockwork";
+    else if(rand<0.97) enemyType="MrDoomBringer";
+    else enemyType="Builderman";
+    waves.push(enemyType);
+  }
+  state.nextEncounters = waves;
+}
+
+function nextEnemy(){
+  if(state.nextEncounters.length===0){
+    addLog("All encounters cleared! You won!","systemText");
+    endGame(true);
+    return;
+  }
+  const next = state.nextEncounters.shift();
+  state.enemy={...enemies[next],hp:enemies[next].maxHp};
+  if(state.enemy.type==="enemy") addLog(`A wild ${state.enemy.name} appears!`,"enemyText");
+  else if(state.enemy.type==="boss") addLog(`Boss fight! Admin ${state.enemy.name} challenges you!`,"bossText");
+  else addLog(`Final challenge: Builderman stands before you!`,"bossText");
+  updateStats();
+}
+
+function afterEnemyDefeat(){
+  let xpGain = state.enemy.type==="enemy"?10:50;
+  state.player.xp += xpGain;
+  addLog(`You gain ${xpGain} XP.`,"systemText");
+  if(state.player.xp >= state.player.xpToLevel){
+    state.player.level++;
+    state.player.attack = Math.floor(state.player.attack*1.2);
+    state.player.maxHp = Math.floor(state.player.maxHp*1.2);
+    state.player.hp = state.player.maxHp;
+    state.player.xp -= state.player.xpToLevel;
+    state.player.xpToLevel = Math.floor(state.player.xpToLevel*1.5);
+    addLog(`You leveled up! Now level ${state.player.level}. HP and ATK increased!`,"systemText");
+    updateStats();
+  }
+  // Show Explore button
+  $('exploreBtn').style.display="inline-block";
+}
+
+function explore(){
+  $('exploreBtn').style.display="none";
+  const paths = ["You wander down a dark corridor.","You follow a flickering light.","You descend a creaking staircase."];
+  const path = paths[Math.floor(Math.random()*paths.length)];
+  addLog(`Exploration: ${path}`,"systemText");
+
+  const lootRoll = Math.random();
+  if(lootRoll<0.5){ state.inventory.medkit++; addLog("You found a Medkit!","itemText"); }
+  else if(lootRoll<0.8){ state.inventory.megaMedkit++; addLog("You found a Mega Medkit!","itemText"); }
+  else { state.inventory.powerOrb++; addLog("You found a Power Orb!","itemText"); }
+
+  const heal = Math.floor(state.player.maxHp*0.1);
+  state.player.hp = Math.min(state.player.maxHp,state.player.hp+heal);
+  addLog(`You feel rejuvenated and heal ${heal} HP.`, "systemText");
+
+  renderInventory();
+  nextEnemy();
+}
+
+function endGame(v){if(v) addLog("Victory! You have vanquished all foes!","systemText"); else addLog("You have been defeated. Game over.","systemText");$('attackBtn').disabled=true; $('exploreBtn').disabled=true; localStorage.removeItem('rpgSave');}
+
+function performAttack(){
+  if(!state.enemy||!state.player) return;
+  const p=state.player, e=state.enemy;
+  let dmg = Math.max(1,Math.floor(p.attack*(0.8+Math.random()*0.4)));
+  e.hp=Math.max(0,e.hp-dmg);
+  let desc="attacks";
+  switch(p.name){
+    case"John Doe": desc="unleashes a surge of malefic light and deals"; break;
+    case"Noli": desc="conjures a dark flame and deals"; break;
+    case"Goz": desc="launches a twisted carnival curse and deals"; break;
+    case"1x1x1x1x1": desc="warps reality with glitchy code and deals"; break;
+    case"Spirit": desc="drains the essence and deals"; break;
+  }
+  addLog(`${p.name} ${desc} ${dmg} damage to ${e.name}.`,"playerText");
+  if(e.hp<=0){addLog(`${e.name} has been defeated!`,"playerText"); afterEnemyDefeat(); return;}
+  updateStats();
+  let edmg=Math.max(1,Math.floor(e.attack*(0.8+Math.random()*0.4)));
+  p.hp=Math.max(0,p.hp-edmg);
+  addLog(`${e.name} attacks you for ${edmg} damage.`,"enemyText");
+  if(p.hp<=0){endGame(false);return;}
+  updateStats();
+}
+
+function chooseMyth(key){
+  const charData=characters[key];
+  state.player={name:charData.name,hp:charData.maxHp,maxHp:charData.maxHp,attack:charData.attack,level:1,xp:0,xpToLevel:50};
+  state.inventory={};
+  inventoryItems.forEach(item=>state.inventory[item.id]=item.count);
+  $('charSelect').style.display='none';
+  $('game').style.display='block';
+  addLog(`You are now ${state.player.name}. Let the adventure begin!`,"systemText");
+  renderInventory();
+  generateEncounters();
+  nextEnemy();
+}
+
+function renderInventory(){
+  const list=$('inventoryList'); list.innerHTML='';
+  Object.keys(state.inventory).forEach(id=>{
+    const c=state.inventory[id];
+    if(c>0){
+      let n="";
+      if(id==="medkit") n="Medkit (Heals 20 HP)";
+      if(id==="megaMedkit") n="Mega Medkit (Fully heals)";
+      if(id==="powerOrb") n="Power Orb (Gain +10 ATK)";
+      const li=document.createElement('li');
+      li.innerHTML=`${n}: x${c} <button onclick="useItem('${id}')">Use</button>`;
+      list.appendChild(li);
+    }
+  });
+}
+
+function useItem(id){
+  const p=state.player;
+  if(state.inventory[id]>0){
+    state.inventory[id]--;
+    let msg="";
+    if(id==="medkit"){ const h=20; p.hp=Math.min(p.maxHp,p.hp+h); msg=`You used a Medkit and healed ${h} HP.`; }
+    else if(id==="megaMedkit"){ p.hp=p.maxHp; msg=`You used a Mega Medkit and fully healed.`; }
+    else if(id==="powerOrb"){ p.attack+=10; msg=`You used a Power Orb. Your attack increases by 10.`; }
+    addLog(msg,"itemText");
+    updateStats();
+    renderInventory();
+  }
+}
+
+$('startBtn').addEventListener('click',startNewGame);
+$('loadBtn').addEventListener('click',loadGame);
+$('attackBtn').addEventListener('click',performAttack);
+$('saveBtn').addEventListener('click',saveGame);
+$('exploreBtn').addEventListener('click',explore);
+
+window.onload=function(){
+  if(localStorage.getItem('rpgSave')) $('loadBtn').style.display='inline-block';
+  renderInventory();
+}
 </script>
 </body>
 </html>
