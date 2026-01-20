@@ -1,242 +1,206 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Roblox Myths RPG</title>
-  <style>
-    body { background:#000; color:#ddd; font-family:monospace; padding:10px; }
-    h1,h2,h3 { text-align:center; color:#fff; }
-    #intro, #charSelect, #game { max-width:600px; margin:auto; padding:10px; background:#111; border:1px solid #333; border-radius:8px; }
-    #ascii-art { font-size:10px; color:#0f0; text-align:center; white-space:pre; }
-    .mythBtn { display:block; width:100%; background:#222; color:#0ff; border:1px solid #444; margin:5px 0; padding:5px; border-radius:4px; cursor:pointer; }
-    .mythBtn:hover { background:#333; }
-    #stats { display:flex; justify-content:space-between; margin-bottom:10px; }
-    #playerStats,#enemyStats { background:#222; padding:5px; border:1px solid #444; border-radius:4px; width:48%; }
-    #actions button { margin:2px; padding:5px 10px; border-radius:4px; cursor:pointer; background:#222; color:#fff; border:1px solid #555; }
-    #actions button:hover { background:#333; }
-    #inventory { background:#222; padding:5px; border:1px solid #444; border-radius:4px; margin-bottom:10px; }
-    #inventoryList { list-style:none; padding:0; }
-    #inventoryList li { margin:2px 0; }
-    #log { background:#000; color:#0f0; padding:5px; height:300px; overflow-y:auto; border:1px solid #444; white-space:pre-wrap; }
-    .playerText { color:#0f0; }
-    .enemyText { color:#f66; }
-    .bossText { color:#f0f; }
-    .itemText { color:#4af; }
-    .systemText { color:#888; }
-  </style>
+<meta charset="UTF-8">
+<title>The Forsaken: Exploration RPG</title>
+<style>
+body { background:#000; color:#ddd; font-family:monospace; padding:10px; }
+h1,h2,h3 { text-align:center; color:#fff; }
+#intro,#charSelect,#game { max-width:700px; margin:auto; padding:10px; background:#111; border:1px solid #333; border-radius:8px; }
+#ascii-art { font-size:10px; color:#0f0; text-align:center; white-space:pre; }
+.mythBtn, .pathBtn { display:block; width:100%; background:#222; color:#0ff; border:1px solid #444; margin:5px 0; padding:5px; border-radius:4px; cursor:pointer; }
+.mythBtn:hover, .pathBtn:hover { background:#333; }
+#stats { display:flex; justify-content:space-between; margin-bottom:10px; }
+#playerStats,#enemyStats { background:#222; padding:5px; border:1px solid #444; border-radius:4px; width:48%; }
+#actions button { margin:2px; padding:5px 10px; border-radius:4px; cursor:pointer; background:#222; color:#fff; border:1px solid #555; }
+#actions button:hover { background:#333; }
+#inventory { background:#222; padding:5px; border:1px solid #444; border-radius:4px; margin-bottom:10px; }
+#inventoryList { list-style:none; padding:0; }
+#inventoryList li { margin:2px 0; }
+#log { background:#000; color:#0f0; padding:5px; height:300px; overflow-y:auto; border:1px solid #444; white-space:pre-wrap; }
+.playerText { color:#0f0; }
+.enemyText { color:#f66; }
+.bossText { color:#f0f; }
+.itemText { color:#4af; }
+.systemText { color:#888; }
+</style>
 </head>
 <body>
 
 <div id="intro">
-  <pre id="ascii-art">
-        ___
-       (   )    *..
-       |   |   ****
-       |   |
-       |   |   
-       -----_______
-      /############\
-     /##############\
-    /################\
-  </pre>
-  <div>
-    <p>A void beyond reality. A chilling whisper fills your mind:</p>
-    <p><em>"Welcome, chosen one. The legends of ROBLOX awaken in the dark."</em></p>
-    <p>Select your Mythical identity to begin your journey:</p>
-  </div>
-  <button id="startBtn">Start New Game</button>
-  <button id="loadBtn" style="display:none;">Load Game</button>
+<pre id="ascii-art">
+    ___
+   (   )    *..
+   |   |   ****
+   |   |
+   |   |   
+   -----_______
+  /############\
+ /##############\
+/################\
+</pre>
+<h2>The Forsaken: Abyssal Expedition</h2>
+<p>Carbon, Vex, Helix, Rogue, and Spirit have fallen to the underworld. </p>
+<p>Now they hunt the spirits and horrors that dwell in the Abyss. </p>
+<p>Explore the twisted halls, choose your path, fight monsters, find treasures, and face the Forsaken.</p>
+<p>Select your character to begin.</p>
+<button id="startBtn">Start New Game</button>
+<button id="loadBtn" style="display:none;">Load Game</button>
 </div>
 
 <div id="charSelect" style="display:none;">
-  <h2>Select Your Myth</h2>
-  <button class="mythBtn" onclick="chooseMyth('JohnDoe')">John Doe<br><small>(Balanced, guardian-like power)</small></button>
-  <button class="mythBtn" onclick="chooseMyth('Noli')">Noli<br><small>(Dark and powerful villain)</small></button>
-  <button class="mythBtn" onclick="chooseMyth('Goz')">Goz the Clown<br><small>(Menacing jester with great resilience)</small></button>
-  <button class="mythBtn" onclick="chooseMyth('OneXfive')">1x1x1x1x1<br><small>(Glitchy and unpredictable)</small></button>
-  <button class="mythBtn" onclick="chooseMyth('Spirit')">Spirit<br><small>(Soul-stealer with life-draining strikes)</small></button>
+<h2>Choose Your Hero</h2>
+<button class="mythBtn" onclick="chooseMyth('Carbon')">Carbon<br><small>Relentless fighter, balanced</small></button>
+<button class="mythBtn" onclick="chooseMyth('Vex')">Vex<br><small>Shadow manipulator</small></button>
+<button class="mythBtn" onclick="chooseMyth('Helix')">Helix<br><small>Quick and unpredictable</small></button>
+<button class="mythBtn" onclick="chooseMyth('Rogue')">Rogue<br><small>Stealth assassin</small></button>
+<button class="mythBtn" onclick="chooseMyth('Spirit')">Spirit<br><small>Soul-draining warrior</small></button>
 </div>
 
 <div id="game" style="display:none;">
-  <div id="stats">
-    <div id="playerStats"></div>
-    <div id="enemyStats"></div>
-  </div>
-  <div id="actions">
-    <button id="attackBtn">Attack</button>
-    <button id="exploreBtn" style="display:none;">Explore</button>
-    <button id="saveBtn">Save Game</button>
-  </div>
-  <div id="inventory">
-    <h3>Inventory</h3>
-    <ul id="inventoryList"></ul>
-  </div>
-  <div id="log"></div>
+<div id="stats">
+<div id="playerStats"></div>
+<div id="enemyStats"></div>
+</div>
+<div id="actions">
+<button id="attackBtn">Attack</button>
+<button id="saveBtn">Save Game</button>
+</div>
+<div id="inventory">
+<h3>Inventory</h3>
+<ul id="inventoryList"></ul>
+</div>
+<div id="log"></div>
 </div>
 
 <script>
+// --- Player characters ---
 const characters = {
-  JohnDoe:{name:"John Doe", maxHp:100, attack:20},
-  Noli:{name:"Noli", maxHp:80, attack:25},
-  Goz:{name:"Goz the Clown", maxHp:120, attack:15},
-  OneXfive:{name:"1x1x1x1x1", maxHp:110, attack:18},
-  Spirit:{name:"Spirit", maxHp:90, attack:10}
+Carbon:{name:"Carbon", maxHp:120, attack:20},
+Vex:{name:"Vex", maxHp:100, attack:25},
+Helix:{name:"Helix", maxHp:90, attack:18},
+Rogue:{name:"Rogue", maxHp:110, attack:22},
+Spirit:{name:"Spirit", maxHp:80, attack:30}
 };
 
+// --- Enemies & Bosses ---
 const enemies = {
-  Noob:{name:"Noob", maxHp:30, attack:5,type:"enemy"},
-  Guest:{name:"Guest", maxHp:50, attack:8,type:"enemy"},
-  Shedletsky:{name:"Shedletsky", maxHp:300, attack:20,type:"boss"},
-  Clockwork:{name:"Clockwork", maxHp:350, attack:22,type:"boss"},
-  MrDoomBringer:{name:"MrDoomBringer", maxHp:400, attack:25,type:"boss"},
-  Builderman:{name:"Builderman", maxHp:600, attack:30,type:"final"}
+Demon:{name:"Demon", maxHp:40, attack:6,type:"enemy",ascii:`  (><) Demon`},
+Ghost:{name:"Ghost", maxHp:50, attack:8,type:"enemy",ascii:`  ~o~ Ghost`},
+Slasher:{name:"Slasher", maxHp:60, attack:10,type:"enemy",ascii:`  |\\_/| Slasher`},
+Skinwalker:{name:"Skinwalker", maxHp:70, attack:12,type:"enemy",ascii:`  /\\ Skinwalker`},
+Gatekeeper:{name:"The Gatekeeper", maxHp:200, attack:20,type:"boss",ascii:`  [||] Gatekeeper`},
+Guteater:{name:"Guteater", maxHp:250, attack:22,type:"boss",ascii:`  {><} Guteater`},
+Sharpstone:{name:"Sharpstone", maxHp:300, attack:25,type:"boss",ascii:`  /\\_/\\ Sharpstone`},
+BoneBreaker:{name:"BoneBreaker", maxHp:350, attack:28,type:"boss",ascii:`  |==| BoneBreaker`},
+GrimReaper:{name:"The Grim Reaper", maxHp:400, attack:30,type:"boss",ascii:`  (☠) GrimReaper`},
+TheEvil:{name:"The Evil", maxHp:450, attack:32,type:"boss",ascii:`  {!!} TheEvil`},
+Forsaken:{name:"The Forsaken", maxHp:600, attack:40,type:"final",ascii:`  /\\##/\\ Forsaken`}
 };
 
+// --- Inventory ---
 const inventoryItems = [
-  {id:"medkit",name:"Medkit",count:2},
-  {id:"megaMedkit",name:"Mega Medkit",count:1},
-  {id:"powerOrb",name:"Power Orb",count:1}
+{id:"medkit",name:"Medkit",count:2},
+{id:"megaMedkit",name:"Mega Medkit",count:1},
+{id:"powerOrb",name:"Power Orb",count:1}
 ];
 
-let state = {player:null,enemy:null,waveIndex:0,inventory:{},nextEncounters:[]};
+// --- Game State ---
+let state = {player:null,enemy:null,inventory:{},roomHistory:[],currentRoom:null,paths:[]};
 
 function $(id){return document.getElementById(id);}
 function addLog(msg,className="systemText"){const l=$('log');const e=document.createElement('div');e.className=className;e.innerHTML=msg;l.appendChild(e);l.scrollTop=l.scrollHeight;}
-function updateStats(){if(!state.player||!state.enemy)return;const p=state.player,e=state.enemy;$('playerStats').innerHTML=`<strong>Player:</strong> ${p.name}<br>HP: ${p.hp}/${p.maxHp} | ATK: ${p.attack} | LVL: ${p.level} | XP: ${p.xp}/${p.xpToLevel}`;let label=(e.type==="boss"||e.type==="final")?`<strong>Admin:</strong> ${e.name}`:`<strong>Enemy:</strong> ${e.name}`;$('enemyStats').innerHTML=`${label}<br>HP: ${e.hp}/${e.maxHp} | ATK: ${e.attack}`;}
+function updateStats(){if(!state.player||!state.enemy)return;const p=state.player,e=state.enemy;$('playerStats').innerHTML=`<strong>Player:</strong> ${p.name}<br>HP: ${p.hp}/${p.maxHp} | ATK: ${p.attack} | LVL: ${p.level} | XP: ${p.xp}/${p.xpToLevel}`;let label=(e.type==="boss"||e.type==="final")?`<strong>Boss:</strong> ${e.name}`:`<strong>Enemy:</strong> ${e.name}`;$('enemyStats').innerHTML=`${label}<br>HP: ${e.hp}/${e.maxHp}`;}
 
-function startNewGame(){
-  localStorage.removeItem('rpgSave');
-  $('intro').style.display='none';
-  $('charSelect').style.display='block';
-  $('loadBtn').style.display='none';
-  addLog("System: Starting a new game...","systemText");
+// --- Rooms & Paths ---
+function generateRoom(){
+  // Each room has random paths (2-3)
+  const room={id:Math.random().toString(36).substr(2,5),paths:[]};
+  const pathTypes=["enemy","treasure","deadend","progress"];
+  const pathCount=2+Math.floor(Math.random()*2); // 2-3 paths
+  for(let i=0;i<pathCount;i++){
+    let type=pathTypes[Math.floor(Math.random()*pathTypes.length)];
+    room.paths.push({type});
+  }
+  state.currentRoom=room;
+  state.roomHistory.push(room);
+  renderPaths();
 }
 
-function loadGame(){
-  const s=JSON.parse(localStorage.getItem('rpgSave'));
-  if(!s){addLog("No save file found.","systemText");return;}
-  $('intro').style.display='none';
-  $('charSelect').style.display='none';
-  $('game').style.display='block';
-  state.player=s.player;
-  state.inventory=s.inventory;
-  state.waveIndex=s.waveIndex;
-  state.nextEncounters=s.nextEncounters;
-  state.enemy=s.enemy;
+function renderPaths(){
+  $('actions').innerHTML="";
+  addLog("\nYou enter a new chamber of the Abyss.","systemText");
+  state.currentRoom.paths.forEach((p,i)=>{
+    const btn=document.createElement("button");
+    btn.className="pathBtn";
+    btn.innerText=`Path ${i+1} - ${p.type}`;
+    btn.onclick=()=>choosePath(i);
+    $('actions').appendChild(btn);
+  });
+  if(state.roomHistory.length>1){
+    const backBtn=document.createElement("button");
+    backBtn.className="pathBtn";
+    backBtn.innerText="Go back";
+    backBtn.onclick=()=>{state.roomHistory.pop();state.currentRoom=state.roomHistory[state.roomHistory.length-1];renderPaths();}
+    $('actions').appendChild(backBtn);
+  }
+}
+
+function choosePath(index){
+  const path=state.currentRoom.paths[index];
+  switch(path.type){
+    case"enemy": spawnRandomEnemy(); break;
+    case"treasure": findTreasure(); break;
+    case"deadend": addLog("Dead end! You return to the previous chamber.","systemText"); renderPaths(); break;
+    case"progress": addLog("You see a faint light ahead. Choose the next path to continue.","systemText"); generateRoom(); break;
+  }
+}
+
+// --- Enemy Handling ---
+function spawnRandomEnemy(){
+  const enemyKeys=["Demon","Ghost","Slasher","Skinwalker"];
+  const enemyKey=enemyKeys[Math.floor(Math.random()*enemyKeys.length)];
+  state.enemy={...enemies[enemyKey],hp:enemies[enemyKey].maxHp};
+  addLog(`\n${state.enemy.ascii}\n${state.enemy.name} attacks!`,"enemyText");
   updateStats();
-  renderInventory();
-  addLog(`Game loaded. You are playing as ${state.player.name}.`,"systemText");
+  $('actions').innerHTML='<button id="attackBtn">Attack</button>';
+  $('attackBtn').addEventListener('click',performAttack);
 }
-
-function saveGame(){
-  if(!state.player)return;
-  localStorage.setItem('rpgSave',JSON.stringify(state));
-  addLog("Game saved.","systemText");
-}
-
-// Generate random waves
-function generateEncounters(){
-  const waves=[];
-  for(let i=0;i<20;i++){
-    let rand=Math.random();
-    let enemyType;
-    if(rand<0.5) enemyType="Noob";
-    else if(rand<0.8) enemyType="Guest";
-    else if(rand<0.9) enemyType=Math.random()<0.5?"Shedletsky":"Clockwork";
-    else if(rand<0.97) enemyType="MrDoomBringer";
-    else enemyType="Builderman";
-    waves.push(enemyType);
-  }
-  state.nextEncounters = waves;
-}
-
-function nextEnemy(){
-  if(state.nextEncounters.length===0){
-    addLog("All encounters cleared! You won!","systemText");
-    endGame(true);
-    return;
-  }
-  const next = state.nextEncounters.shift();
-  state.enemy={...enemies[next],hp:enemies[next].maxHp};
-  if(state.enemy.type==="enemy") addLog(`A wild ${state.enemy.name} appears!`,"enemyText");
-  else if(state.enemy.type==="boss") addLog(`Boss fight! Admin ${state.enemy.name} challenges you!`,"bossText");
-  else addLog(`Final challenge: Builderman stands before you!`,"bossText");
-  updateStats();
-}
-
-function afterEnemyDefeat(){
-  let xpGain = state.enemy.type==="enemy"?10:50;
-  state.player.xp += xpGain;
-  addLog(`You gain ${xpGain} XP.`,"systemText");
-  if(state.player.xp >= state.player.xpToLevel){
-    state.player.level++;
-    state.player.attack = Math.floor(state.player.attack*1.2);
-    state.player.maxHp = Math.floor(state.player.maxHp*1.2);
-    state.player.hp = state.player.maxHp;
-    state.player.xp -= state.player.xpToLevel;
-    state.player.xpToLevel = Math.floor(state.player.xpToLevel*1.5);
-    addLog(`You leveled up! Now level ${state.player.level}. HP and ATK increased!`,"systemText");
-    updateStats();
-  }
-  // Show Explore button
-  $('exploreBtn').style.display="inline-block";
-}
-
-function explore(){
-  $('exploreBtn').style.display="none";
-  const paths = ["You wander down a dark corridor.","You follow a flickering light.","You descend a creaking staircase."];
-  const path = paths[Math.floor(Math.random()*paths.length)];
-  addLog(`Exploration: ${path}`,"systemText");
-
-  const lootRoll = Math.random();
-  if(lootRoll<0.5){ state.inventory.medkit++; addLog("You found a Medkit!","itemText"); }
-  else if(lootRoll<0.8){ state.inventory.megaMedkit++; addLog("You found a Mega Medkit!","itemText"); }
-  else { state.inventory.powerOrb++; addLog("You found a Power Orb!","itemText"); }
-
-  const heal = Math.floor(state.player.maxHp*0.1);
-  state.player.hp = Math.min(state.player.maxHp,state.player.hp+heal);
-  addLog(`You feel rejuvenated and heal ${heal} HP.`, "systemText");
-
-  renderInventory();
-  nextEnemy();
-}
-
-function endGame(v){if(v) addLog("Victory! You have vanquished all foes!","systemText"); else addLog("You have been defeated. Game over.","systemText");$('attackBtn').disabled=true; $('exploreBtn').disabled=true; localStorage.removeItem('rpgSave');}
 
 function performAttack(){
   if(!state.enemy||!state.player) return;
-  const p=state.player, e=state.enemy;
-  let dmg = Math.max(1,Math.floor(p.attack*(0.8+Math.random()*0.4)));
+  const p=state.player,e=state.enemy;
+  let dmg=Math.max(1,Math.floor(p.attack*(0.8+Math.random()*0.4)));
   e.hp=Math.max(0,e.hp-dmg);
-  let desc="attacks";
-  switch(p.name){
-    case"John Doe": desc="unleashes a surge of malefic light and deals"; break;
-    case"Noli": desc="conjures a dark flame and deals"; break;
-    case"Goz": desc="launches a twisted carnival curse and deals"; break;
-    case"1x1x1x1x1": desc="warps reality with glitchy code and deals"; break;
-    case"Spirit": desc="drains the essence and deals"; break;
-  }
-  addLog(`${p.name} ${desc} ${dmg} damage to ${e.name}.`,"playerText");
-  if(e.hp<=0){addLog(`${e.name} has been defeated!`,"playerText"); afterEnemyDefeat(); return;}
-  updateStats();
+  addLog(`${p.name} attacks ${e.name} for ${dmg} damage!`,"playerText");
+  if(e.hp<=0){addLog(`${e.name} defeated!`,"playerText");state.enemy=null; generateRoom(); return;}
   let edmg=Math.max(1,Math.floor(e.attack*(0.8+Math.random()*0.4)));
   p.hp=Math.max(0,p.hp-edmg);
-  addLog(`${e.name} attacks you for ${edmg} damage.`,"enemyText");
-  if(p.hp<=0){endGame(false);return;}
+  addLog(`${e.name} attacks back for ${edmg} damage!`,"enemyText");
+  if(p.hp<=0){addLog("You have died in the Abyss.","systemText"); $('actions').innerHTML=""; return;}
   updateStats();
 }
 
+// --- Treasure ---
+function findTreasure(){
+  const lootRoll=Math.random();
+  if(lootRoll<0.5){state.inventory.medkit++; addLog("Found a Medkit!","itemText");}
+  else if(lootRoll<0.8){state.inventory.megaMedkit++; addLog("Found a Mega Medkit!","itemText");}
+  else{state.inventory.powerOrb++; addLog("Found a Power Orb!","itemText");}
+  renderInventory();
+  addLog("You return to choose another path.","systemText");
+  renderPaths();
+}
+
+// --- Player selection ---
 function chooseMyth(key){
   const charData=characters[key];
   state.player={name:charData.name,hp:charData.maxHp,maxHp:charData.maxHp,attack:charData.attack,level:1,xp:0,xpToLevel:50};
-  state.inventory={};
-  inventoryItems.forEach(item=>state.inventory[item.id]=item.count);
-  $('charSelect').style.display='none';
-  $('game').style.display='block';
-  addLog(`You are now ${state.player.name}. Let the adventure begin!`,"systemText");
+  state.inventory={}; inventoryItems.forEach(item=>state.inventory[item.id]=item.count);
+  $('charSelect').style.display='none'; $('game').style.display='block';
+  addLog(`You are ${state.player.name}. Enter the Abyss.`,"systemText");
   renderInventory();
-  generateEncounters();
-  nextEnemy();
+  generateRoom();
 }
 
 function renderInventory(){
@@ -247,7 +211,7 @@ function renderInventory(){
       let n="";
       if(id==="medkit") n="Medkit (Heals 20 HP)";
       if(id==="megaMedkit") n="Mega Medkit (Fully heals)";
-      if(id==="powerOrb") n="Power Orb (Gain +10 ATK)";
+      if(id==="powerOrb") n="PowerOrb (+10 ATK)";
       const li=document.createElement('li');
       li.innerHTML=`${n}: x${c} <button onclick="useItem('${id}')">Use</button>`;
       list.appendChild(li);
@@ -257,28 +221,19 @@ function renderInventory(){
 
 function useItem(id){
   const p=state.player;
-  if(state.inventory[id]>0){
-    state.inventory[id]--;
+  if(state.inventory[id]>0){ state.inventory[id]--;
     let msg="";
-    if(id==="medkit"){ const h=20; p.hp=Math.min(p.maxHp,p.hp+h); msg=`You used a Medkit and healed ${h} HP.`; }
-    else if(id==="megaMedkit"){ p.hp=p.maxHp; msg=`You used a Mega Medkit and fully healed.`; }
-    else if(id==="powerOrb"){ p.attack+=10; msg=`You used a Power Orb. Your attack increases by 10.`; }
-    addLog(msg,"itemText");
-    updateStats();
-    renderInventory();
+    if(id==="medkit"){const h=20;p.hp=Math.min(p.maxHp,p.hp+h);msg=`Used Medkit, healed ${h} HP.`;}
+    else if(id==="megaMedkit"){p.hp=p.maxHp; msg=`Used Mega Medkit, full heal.`;}
+    else if(id==="powerOrb"){p.attack+=10; msg=`Used PowerOrb, +10 ATK.`;}
+    addLog(msg,"itemText"); updateStats(); renderInventory();
   }
 }
 
-$('startBtn').addEventListener('click',startNewGame);
-$('loadBtn').addEventListener('click',loadGame);
-$('attackBtn').addEventListener('click',performAttack);
-$('saveBtn').addEventListener('click',saveGame);
-$('exploreBtn').addEventListener('click',explore);
+$('startBtn').addEventListener('click',()=>{$('intro').style.display='none';$('charSelect').style.display='block';});
+$('loadBtn').addEventListener('click',()=>{const s=JSON.parse(localStorage.getItem('rpgSave')); if(s){state=s; $('intro').style.display='none'; $('game').style.display='block'; renderInventory();}});
 
-window.onload=function(){
-  if(localStorage.getItem('rpgSave')) $('loadBtn').style.display='inline-block';
-  renderInventory();
-}
 </script>
+
 </body>
 </html>
